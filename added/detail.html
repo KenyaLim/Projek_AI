@@ -1,45 +1,101 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Detail Cuaca</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Detail Cuaca</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            margin: 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #89CFF0 0%, #F7CAC9 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+        }
+
+        .weather-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            margin: 0 0 20px 0;
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .weather-info p {
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .weather-info strong {
+            color: #2c3e50;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            margin: 20px 0;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
-  <h2 id="title">Memuat cuaca...</h2>
-  <div id="weather-info"></div>
+    <div class="weather-card">
+        <h2 id="title">Memuat cuaca...</h2>
+        <div id="weather-info" class="weather-info"></div>
+    </div>
 
-  <script>
-    const API_KEY = '080c847923ad48d79f1142215252502';
-    const params = new URLSearchParams(window.location.search);
-    const city = params.get('city');
+    <script>
+        const API_KEY = '080c847923ad48d79f1142215252502';
+        const params = new URLSearchParams(window.location.search);
+        const city = params.get('city');
 
-    async function getWeather() {
-      const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}&lang=id`);
-      const data = await res.json();
-      if (data.error) {
-        document.getElementById('title').innerText = 'Gagal mengambil data';
-        return;
-      }
+        async function getWeather() {
+            const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}&lang=id`);
+            const data = await res.json();
+            if (data.error) {
+                document.getElementById('title').innerHTML = '<span class="error-message">Gagal mengambil data</span>';
+                return;
+            }
 
-      const w = data.current;
-      const info = `
-        <p><strong>Kota:</strong> ${data.location.name}</p>
-        <p><strong>Suhu:</strong> ${w.temp_c}°C</p>
-        <p><strong>Kondisi:</strong> ${w.condition.text}</p>
-        <p><strong>Kelembapan:</strong> ${w.humidity}%</p>
-        <p><strong>Angin:</strong> ${w.wind_kph} km/j</p>
-        <img src="https:${w.condition.icon}" alt="icon">
-      `;
+            const w = data.current;
+            const info = `
+                <img src="https:${w.condition.icon}" alt="icon">
+                <p><strong>Kota:</strong> <span>${data.location.name}</span></p>
+                <p><strong>Suhu:</strong> <span>${w.temp_c}°C</span></p>
+                <p><strong>Kondisi:</strong> <span>${w.condition.text}</span></p>
+                <p><strong>Kelembapan:</strong> <span>${w.humidity}%</span></p>
+                <p><strong>Angin:</strong> <span>${w.wind_kph} km/j</span></p>
+            `;
 
-      document.getElementById('title').innerText = `Cuaca di ${data.location.name}`;
-      document.getElementById('weather-info').innerHTML = info;
-    }
+            document.getElementById('title').innerText = `Cuaca di ${data.location.name}`;
+            document.getElementById('weather-info').innerHTML = info;
+        }
 
-    if (city) getWeather();
-    else document.getElementById('title').innerText = 'Kota tidak ditemukan.';
-  </script>
+        if (city) getWeather();
+        else document.getElementById('title').innerText = 'Kota tidak ditemukan.';
+    </script>
 </body>
 </html>
