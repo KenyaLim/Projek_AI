@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WeatherBot+</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+    <div class="browser-window">
+        <div class="browser-chrome">
+            <div class="browser-tabs">
+                <div class="browser-tab active">
+                    <span>🌦️</span>
+                    <span>WeatherBot+</span>
+                </div>
+            </div>
+            <div class="toolbar">
+                <div class="address-bar">
+                    <div class="ssl-icon">🔒</div>
+                    <div class="url">weatherbot.app</div>
+                </div>
+            </div>
+        </div>
+        <div class="browser-content">
+            <div class="header">
+                <div style="font-size:3.2em; line-height:1; margin-bottom:8px;">🌦️</div>
+                <h1>Weather Chatbot</h1>
+                <p>Cuaca, gempa, dan info bencana Indonesia</p>
+            </div>
+            <div class="main-flex">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message bot-message">Halo! Saya WeatherBot+. Tanyakan cuaca, gempa, atau bencana di kota Anda.</div>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" id="user-input" placeholder="Ketik pesan Anda..." />
+                        <button onclick="sendMessage()">Kirim</button>
+                    </div>
+                </div>
+                <div class="side-info">
+                    <b>✨ Klik untuk mulai bertanya:</b>
+                    <ul class="tips-list">
+                        <span onclick="useTip(this)" class="tip-item">"Cuaca di Bandung besok?"</span>
+                        <span onclick="useTip(this)" class="tip-item">"Ada gempa terbaru?"</span>
+                        <span onclick="useTip(this)" class="tip-item">"Banjir di Surabaya?"</span>
+                    </ul>
+                    <hr>
+                    <span>🌦️ <b>Quote:</b> "Langit cerah adalah hadiah setelah hujan."</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
