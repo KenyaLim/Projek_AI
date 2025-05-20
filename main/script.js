@@ -128,7 +128,7 @@ async function fetchWeather(city, dateStr, intent) {
   
 
 const label = dateStr ? `Pada ${dateStr}` : 'Saat ini';
-const detailLink = `<br><a href="detail.html?city=${encodeURIComponent(weather.city)}" target="_blank">Lihat detail cuaca di ${weather.city} →</a>`;
+const detailLink = `<br><a href="#" onclick="showWeatherDetail('${encodeURIComponent(weather.city)}'); return false;">Lihat detail cuaca di ${weather.city} →</a>`;
 
 if (intent === 'rain') {
   const response = weather.isRaining
@@ -333,4 +333,47 @@ async function sendMessage() {
     userInput.disabled = false;
     userInput.focus();
   }
+}
+
+async function showWeatherDetail(city) {
+    try {
+        const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}&lang=id`);
+        const data = await res.json();
+        
+        if (data.error) {
+            alert('Gagal mengambil data cuaca');
+            return;
+        }
+
+        const w = data.current;
+        const content = `
+            <p><strong>Kota:</strong> <span>${data.location.name}</span></p>
+            <p><strong>Suhu:</strong> <span>${w.temp_c}°C</span></p>
+            <p><strong>Kondisi:</strong> <span>${translateCondition(w.condition.text)}</span></p>
+            <p><strong>Kelembapan:</strong> <span>${w.humidity}%</span></p>
+            <p><strong>Angin:</strong> <span>${w.wind_kph} km/j</span></p>
+            <div style="text-align: center; margin-top: 15px;">
+                <img src="https:${w.condition.icon}" alt="weather icon" style="width: 64px;">
+            </div>
+        `;
+
+        document.getElementById('modal-title').textContent = `Cuaca di ${data.location.name}`;
+        document.getElementById('modal-content').innerHTML = content;
+        document.getElementById('weatherModal').style.display = 'block';
+    } catch (err) {
+        console.error(err);
+        alert('Gagal mengambil data cuaca');
+    }
+}
+
+// Add modal close functionality
+document.querySelector('.close-modal').onclick = function() {
+    document.getElementById('weatherModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('weatherModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
 }
