@@ -74,19 +74,6 @@ body {
   to { opacity: 1; }
 }
 
-/* .user-message {
-  background: linear-gradient(90deg, #6366f1 60%, #818cf8 100%);
-  color: #fff;
-  align-self: flex-end;
-  border-bottom-right-radius: 4px;
-}
-
-.bot-message {
-  background: #e0e7ff;
-  color: #22223b;
-  align-self: flex-start;
-  border-bottom-left-radius: 4px;
-} */
 
 .input-container {
   display: flex;
@@ -204,4 +191,30 @@ a {
   .input-container {
     padding: 10px 6px;
   }
+}
+
+.browser-window {
+    width: 95%;
+    max-width: 1400px;  /* Increased from previous value */
+    margin: 20px auto;
+    min-height: 90vh;
+}
+
+.browser-content {
+    padding-bottom: 20px;  /* Added padding for developer section */
+}
+
+.copyright {
+    text-align: center;
+    padding: 15px 20px;
+    margin-top: auto;
+    color: #666;
+    font-size: 0.75em;
+    border-top: 1px solid #eee;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.copyright p {
+    margin: 0;
+    opacity: 0.8;
 }
