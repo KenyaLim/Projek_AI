@@ -14,8 +14,15 @@ function addMessage(message, isUser = false) {
     const div = document.createElement('div');
     div.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
     div.innerHTML = message;
-    chatMessages.appendChild(div);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Ensure message is fully rendered before scrolling
+    requestAnimationFrame(() => {
+        chatMessages.appendChild(div);
+        // Delay scroll to after animation
+        setTimeout(() => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 100);
+    });
 }
 
 function translateCondition(condition) {
@@ -286,28 +293,44 @@ async function sendMessage() {
   const userMsg = userInput.value.trim();
   if (!userMsg) return;
 
+  // Show loading state
+  const button = document.querySelector('.input-container button');
+  const loading = button.querySelector('.loading');
+  const buttonText = button.querySelector('.button-text');
+  
+  loading.style.display = 'inline-block';
+  buttonText.style.opacity = '0.5';
+  button.disabled = true;
+  userInput.disabled = true;
+
   addMessage(userMsg, true);
   userInput.value = '';
 
-  const intent = detectIntent(userMsg);
-  const city = extractCity(userMsg);
-  const dateStr = extractDateFromText(userMsg);
+  try {
+    const intent = detectIntent(userMsg);
+    const city = extractCity(userMsg);
+    const dateStr = extractDateFromText(userMsg);
 
-  if (dateStr === 'future-limit-exceeded') {
-    return addMessage('Maaf, saya hanya bisa memberikan prediksi cuaca hingga 2 hari ke depan.');
+    if (dateStr === 'future-limit-exceeded') {
+      addMessage('Maaf, saya hanya bisa memberikan prediksi cuaca hingga 2 hari ke depan.');
+    } else if (intent === 'earthquake') {
+      await handleEarthquakeQuery();
+    } else if (intent === 'disaster') {
+      await handleDisasterQuery(city);
+    } else if (!city) {
+      addMessage('Mohon sebutkan nama kota. Contoh: "Cuaca di Jakarta besok" atau "Jakarta 2 hari lalu hujan?"');
+    } else {
+      await fetchWeather(city, dateStr, intent);
+    }
+  } catch (error) {
+    console.error(error);
+    addMessage('Maaf, terjadi kesalahan. Silakan coba lagi.');
+  } finally {
+    // Reset loading state
+    loading.style.display = 'none';
+    buttonText.style.opacity = '1';
+    button.disabled = false;
+    userInput.disabled = false;
+    userInput.focus();
   }
-
-  if (intent === 'earthquake') {
-    return await handleEarthquakeQuery();
-  }
-
-  if (intent === 'disaster') {
-    return await handleDisasterQuery(city);
-  }
-
-  if (!city) {
-    return addMessage('Mohon sebutkan nama kota. Contoh: "Cuaca di Jakarta besok" atau "Jakarta 2 hari lalu hujan?"');
-  }
-
-  return await fetchWeather(city, dateStr, intent);
 }
